@@ -1,0 +1,38 @@
+{%extends "feed/base_temp.html"%}
+{% block content %}
+
+<article class="media content-section">
+  <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="{% url 'user-posts' post.author %}">{{ post.author }}</a>
+      <small class="text-muted">{{ post.date_posted }}</small>
+    </div>
+    <h2><a class="article-title" href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h2>
+    <p class="article-content">{{ post.content }}</p>
+
+
+    <div>
+      <form action="{% url 'like_post' %}" method="post">
+        {% csrf_token %}
+        {% if request.user in post.get_likers %}
+          <button type="submit" name="post_id" value={{post.id}} class = "btn btn-primary-outline btn-sm mt-1 mb-1" style="background-color:transparent"><i class="fa fa-heart" style="color:#FF0000;"></i></button>
+        {% else %}
+          <button type="submit" name="post_id" value={{post.id}} class = "btn btn-primary-outline btn-sm mt-1 mb-1" style="background-color:transparent"><i class="far fa-heart"></i></button>
+
+        {% endif %}
+        <span>{{post.total_likes}}</span>
+        {% if post.author == user %}
+          <a class="btn btn-primary-outline btn-sm mt-1 mb-1" href="{% url 'post-update' post.id%}">
+              <i class="far fa-edit"></i> Edit Post
+          </a>
+          <a class="btn btn-primary-outline btn-sm mt-1 mb-1" href="{% url 'post-delete' post.id%}">
+              <i class="far fa-trash-alt"></i>
+              Delete Post
+          </a>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</article>
+{% endblock content%}

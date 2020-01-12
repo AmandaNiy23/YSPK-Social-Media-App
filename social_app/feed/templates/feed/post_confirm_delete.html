@@ -1,0 +1,16 @@
+{%extends "feed/base_temp.html"%}
+{% block content %}
+  <div class="content-section">
+    <form method="POST">
+      {% csrf_token %}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Delete Post?</legend>
+      </fieldset>
+      <p>Are you sure you want to delete the post? This cannot be undone and it will be romoved from your profile, the timeline of any accounts that follow you, and from  YSPK search results</p>
+      <div class="form-group">
+        <a class="btn btn-outline-secondary" href="{% url 'post_detail' object.id %}">Cancel</a>
+        <button class="btn btn-outline-danger" type="submit">Delete</button>
+      </div>
+    </form>
+  </div>
+{% endblock content%}
