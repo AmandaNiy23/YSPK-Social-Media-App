@@ -8,12 +8,8 @@
     <p class="article-content">{{ comment.content}}</p>
 
     {% if comment.user == user %}
-      <a class="btn btn-primary-outline btn-sm mt-1 mb-1" href="{% url 'post-update' post.id%}">
-          <span>
-          <i class="far fa-edit"></i> Edit
-          </span>
-      </a>
-      <a class="btn btn-primary-outline btn-sm mt-1 mb-1" href="{% url 'post-delete' post.id%}">
+
+      <a class="btn btn-primary-outline btn-sm mt-1 mb-1" href="{% url 'post-delete' comment.id%}">
           <span><i class="far fa-trash-alt"></i>
           Delete
           </span>

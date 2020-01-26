@@ -69,7 +69,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def post_detail(request, id):
     post = Post.objects.get(id=id)
-    comments = Comment.objects.filter(post = post, reply=None).order_by('-id')
+    comments = Comment.objects.filter(post = post).order_by('-id')
     is_liked = False
     if post.likes.filter(id=request.user.id).exists():
         is_liked = True
@@ -78,17 +78,8 @@ def post_detail(request, id):
         comment_form = CommentForm(request.POST or None)
         if comment_form.is_valid():
             content=request.POST.get('content')
-            reply_id = request.POST.get('comment_id')
-            logger.error('reply_id')
-            logger.error(reply_id)
-            if reply_id:
-                commentobj = Comment.objects.get(id=reply_id)
-            else:
-                commentobj = None
-            comment = Comment.objects.create(post=post, user=request.user, content=content, reply=commentobj)
+            comment = Comment.objects.create(post=post, user=request.user, content=content)
             comment.save()
-
-
 
             #return HttpResponseRedirect(post.get_absolute_url())
     else:
@@ -157,13 +148,13 @@ def profile(request):
 
     return render(request, 'feed/userprofile.html', context)
 
-def liked_posts(request):
-    user= request.user
+def liked_posts(request, username):
+    user = User.objects.filter(username=username).first()
     liked_posts = user.likes.all()
 
     context = {
         "posts": liked_posts,
-        "username": user.username,
+        "username": username,
         }
     return render(request, 'feed/userprofile.html', context)
 

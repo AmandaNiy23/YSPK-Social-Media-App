@@ -33,9 +33,8 @@
       <a class="navbar-brand" id="site-logo" href="#" style="color: #00818A;">YSPK</a>
       <a href="{% url 'feed-home' %}"><i class="fas fa-home"></i> Home</a>
     {% if user.is_authenticated %}
-      <a href="{% url 'feed-home' %}"><i class="fas fa-rocket"></i> Explore</a>
-      <a href="{% url 'feed-home' %}"><i class="far fa-bell"></i> Notifications</a>
       <a href="{% url 'user-posts' user.username %}"><img class="rounded-circle sidenav-img" src="{{ user.profile.image.url }}">Profile</a>
+      <a href="{% url 'post-create' %}"><i class="fas fa-pen"></i> New Post</a>
       <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
 
     {%else%}

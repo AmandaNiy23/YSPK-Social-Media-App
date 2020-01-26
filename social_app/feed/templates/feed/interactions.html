@@ -1,5 +1,5 @@
 
-  <a href="" class="comment"><i class="far fa-comment"></i>
+  <a href="{% url 'post_detail' post.id %}" class="comment"><i class="far fa-comment"></i>
   <span class="total-likess">{{ post.comments.count }}
 
   <a href="" class="like">

@@ -4,8 +4,8 @@
     <ul style="list-style-type:none" class="stream">
       <div display="flex" justify-content="space-between" white-space="nowrap">
 
-      <a class="btn btn-outline-secondary content-section" href="{% url 'user-posts' username %}">Posts</a><a class="btn btn-outline-secondary content-section" href="{% url 'user-posts' username %}">Comments</a><a class="btn btn-outline-secondary content-section" href="{% url 'liked_posts' %}">Favorites</a>
-      {% if user.username == username %}
+      <a class="btn btn-outline-secondary content-section" href="{% url 'user-posts' username %}">Posts</a><a class="btn btn-outline-secondary content-section" href="{% url 'liked_posts' username %}">Favorites</a>
+      {% if user.username|stringformat:"s" == username|stringformat:"s" %}
 
         <a class="btn btn-outline-secondary content-section" href="{% url 'profile-update' %}">Update Profile</a>
       {%endif%}
