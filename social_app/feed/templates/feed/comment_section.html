@@ -1,0 +1,11 @@
+<div class="container-fluid mt-2">
+  <div class="form-group row">
+    {% include 'feed/comment_form.html' %}
+  </div>
+</div>
+
+{{ comments.count }} Comment{{ comments|pluralize }}
+{% for comment in comments %}
+  {% include 'feed/comment.html' %}
+
+{% endfor %}

@@ -2,9 +2,11 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 from users.models import User
 from django.template.loader import render_to_string
-from .models import Post
+from .models import Post, Comment
+from .forms import CommentForm
 import logging
 
 logger = logging.getLogger(__name__)
@@ -24,7 +26,7 @@ def about(request):
 
 class PostListView(ListView):
     model = Post
-    paginate_by = 5
+    paginate_by = 10
     template_name = 'feed/home.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
@@ -67,48 +69,118 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def post_detail(request, id):
     post = Post.objects.get(id=id)
+    comments = Comment.objects.filter(post = post, reply=None).order_by('-id')
     is_liked = False
     if post.likes.filter(id=request.user.id).exists():
         is_liked = True
+
+    if request.method =='POST':
+        comment_form = CommentForm(request.POST or None)
+        if comment_form.is_valid():
+            content=request.POST.get('content')
+            reply_id = request.POST.get('comment_id')
+            logger.error('reply_id')
+            logger.error(reply_id)
+            if reply_id:
+                commentobj = Comment.objects.get(id=reply_id)
+            else:
+                commentobj = None
+            comment = Comment.objects.create(post=post, user=request.user, content=content, reply=commentobj)
+            comment.save()
+
+
+
+            #return HttpResponseRedirect(post.get_absolute_url())
+    else:
+        comment_form = CommentForm()
+
     context = {
         'post': post,
         'is_liked': is_liked,
         'total_likes':post.total_likes(),
+        'comments':comments,
+        'comment_form': comment_form,
     }
+
+    if request.is_ajax():
+        html = render_to_string('feed/comment_section.html', context, request=request)
+        return JsonResponse({'form':html})
 
     return render(request, 'feed/post_detail.html', context)
 
 
 
-
+@login_required
+#@require_http_methods(["POST"])
 def like_post(request):
     # post_id = request.POST["post_id"]
     # post = Post.objects.get(pk=post_id)
     # user = request.user
     # return HttpResponseRedirect("")
-    post = get_object_or_404(Post, id=request.POST.get('post_id'))
+    logger.error(request.user)
+    post_id = request.POST.get("post")
+    logger.error(post_id)
+    post = get_object_or_404(Post, id=request.POST.get("post"))
+
+    user=request.user
+
     is_liked = False
-    logger.error("!!!!")
+
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
+        logger.error("!!!!")
     else:
         post.likes.add(request.user)
         is_liked = True
+        logger.error("*****")
     # user = request.user
     # post.toggle_like(user)
 
-    return HttpResponseRedirect(post.get_absolute_url())
+    context = {
+        'post': post,
+        'is_liked': is_liked,
+        'total_likes':post.total_likes(),
+    }
+    if request.is_ajax():
+        logger.error("*** " + str(post.total_likes())+ " ***")
+        return JsonResponse({'likes':post.total_likes()})
+    #return HttpResponseRedirect(post.get_absolute_url())
 
+def profile(request):
+    user= request.user
+    posts = Post.objects.filter(author = user.id)
 
+    context = {
+        "posts": posts,
+        "username": user.username,
+        }
+
+    return render(request, 'feed/userprofile.html', context)
+
+def liked_posts(request):
+    user= request.user
+    liked_posts = user.likes.all()
+
+    context = {
+        "posts": liked_posts,
+        "username": user.username,
+        }
+    return render(request, 'feed/userprofile.html', context)
 
 def userprofile(request, username):
     userarr = User.objects.filter(username=username)
     user = userarr.first()
+    logger.error("YOOOO")
+    logger.error(username)
     posts = Post.objects.filter(author = user.id)
 
-    context = {"posts": posts}
+    context = {
+        "posts": posts,
+        "username": user,
+        }
 
-    return render(request, 'feed/home.html', context)
+
+    return render(request, 'feed/userprofile.html', context)
 
 
 class UserPostList(ListView):

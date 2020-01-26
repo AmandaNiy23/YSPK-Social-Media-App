@@ -1,0 +1,18 @@
+<article class="media content-section">
+  <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="{% url 'user-posts' post.author %}"><span class="username">{{ post.author }}</span></a>
+      <small class="text-muted">{{ post.date_posted }}</small>
+    </div>
+    <h2><a class="article-title" href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h2>
+    <p class="article-content">{{ post.content |truncatewords:30}}</p>
+
+
+    <div id="interactions">
+
+      {% include "feed/interactions.html" %}
+
+    </div>
+  </div>
+</article>

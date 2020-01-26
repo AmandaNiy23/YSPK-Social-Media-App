@@ -1,36 +1,28 @@
+
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-from django.views.generic import ListView
-from .models import User
+from .forms import RegistrationForm, ProfileUpdateForm, UserUpdateForm
+from django.contrib.auth.forms import UserCreationForm
+import logging
 
-# Create your views here.
+logger = logging.getLogger(__name__)
+
 def register(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
-            messages.success(request, f'Your account has been successfuly created!')
-
-            #redirect to the login page if registration was successful
+            messages.success(request, f'Your account has been created! You are now able to log in')
             return redirect('login')
-
     else:
-        form = UserRegisterForm()
-
-    context = {
-        'form': form
-    }
-
-    return render(request, 'users/register.html',  context)
+        form = RegistrationForm()
+    return render(request, 'users/register.html', {'form': form})
 
 #this decorator restricts access to profile, only allows a user that is logged in
 @login_required
-def profile(request):
+def profile_update(request):
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=request.user)
         profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)

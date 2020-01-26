@@ -1,0 +1,11 @@
+{% for post in posts %}
+<li class="postobj" post-id="{{post.id}}">
+    {% include "feed/single_post.html" %}
+</li>
+{% endfor %}
+
+{% if is_paginated %}
+
+  {% include "feed/pagination.html" %}
+
+{% endif %}

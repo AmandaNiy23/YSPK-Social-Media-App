@@ -26,86 +26,29 @@
 </head>
 <body>
 
-  <header class="scolling-header nav-down">
-    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark navbar-toggleable-md">
-
-      <button class="navbar-toggler p-0 border-0" type="button" data-toggle="collapse" data-target="#navbarItems">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <a class="navbar-brand" id="site-logo" href="#">YSPK</a>
-
-      <div class="navbar-collapse offcanvas-collapse" id="navbarItems">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'feed-home' %}">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'feed-about' %}">About</a>
-          </li>
-          </li>
-        </ul>
-
-        <!--if user is unauthenticated disply login/register options, otherwise display logout and profile options-->
-        <div class="navbar-nav">
-                {% if user.is_authenticated %}
-                  <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-                  <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-                {% else %}
-                  <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                  <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-                {% endif %}
-
-        </div>
-      </div>
-      <div>
-        <form class="form-inline" id="serch-bar">
-          <input class="form-control search-bar" type="text" placeholder="Search" aria-label="Search">
-        </form>
-      </div>
-
-
-    </nav>
-
-    <nav class="navbar navbar-expand-md navbar-light navbar-toggleable">
-      <button class="navbar-toggler p-0 border-0" type="button" data-toggle="collapse" data-target="#navbarItems2">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="navbar-collapse offcanvas-collapse" id="navbarItems2">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="#">Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              Friends
-              <span class="badge badge-pill bg-light align-text-bottom">27</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Explore</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Suggestions</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
 
 
 
-  </header>
+    <div class="sidenav">
+      <a class="navbar-brand" id="site-logo" href="#" style="color: #00818A;">YSPK</a>
+      <a href="{% url 'feed-home' %}"><i class="fas fa-home"></i> Home</a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'feed-home' %}"><i class="fas fa-rocket"></i> Explore</a>
+      <a href="{% url 'feed-home' %}"><i class="far fa-bell"></i> Notifications</a>
+      <a href="{% url 'user-posts' user.username %}"><img class="rounded-circle sidenav-img" src="{{ user.profile.image.url }}">Profile</a>
+      <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
 
-  <div class="sidenav">
-    <a href="{% url 'feed-home' %}">Home</a>
-    <a href="{% url 'feed-home' %}">Explore</a>
-    <a href="{% url 'feed-home' %}">Notifications</a>
-    <a href="{% url 'profile' %}">Profile</a>
-  </div>
+    {%else%}
+      <a href="{% url 'login' %}"><i class="fas fa-rocket"></i> Login</a>
+      <a href="{% url 'register' %}"><i class="far fa-bell"></i> Register</a>
 
-  <main role="main" class="container mt-4">
+    {% endif %}
+    </div>
+
+
+  <main role="main" id="main-content" class="container mt-4">
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-12">
           {% if messages %}
             {% for message in messages %}
               <div class="alert alert-{{ message.tags }}">
@@ -113,26 +56,10 @@
               </div>
             {% endfor %}
           {% endif %}
-          <!-- {% if user.is_authenticated %}
-          <div>
-            <a class="btn btn-outline-secondary content-section" href="{% url 'post-create' %}">Create New Post</a>
-          </div>
-          {%endif%} -->
+
           {% block content %}{% endblock %}
         </div>
-      <div class="col-md-4">
-        <div class="content-section">
-          <h3>Our Sidebar</h3>
-          <p class='text-muted'>You can put any information here you'd like.
-            <ul class="list-group">
-              <li class="list-group-item list-group-item-light">Latest Posts</li>
-              <li class="list-group-item list-group-item-light">Announcements</li>
-              <li class="list-group-item list-group-item-light">Calendars</li>
-              <li class="list-group-item list-group-item-light">etc</li>
-            </ul>
-          </p>
-        </div>
-      </div>
+
     </div>
   </main>
 
@@ -143,6 +70,139 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  
+  {% if request.user.is_authenticated %}
+  <script type="text/javascript">
+  $(document).ready(function(){
+
+
+
+    $(".reply-button").click(function() {
+      $(this).parent().parent().next('.replied-comments').fadeToggle()
+    });
+
+
+    $("ul.stream").on("click", ".like", function() {
+      console.log(document.body)
+
+      var li = $(this).closest("li");
+      var post = $(li).attr("post-id");
+      console.log(post)
+      payload = {
+        'post': post,
+        'csrfmiddlewaretoken': '{{csrf_token}}',
+      }
+      $.ajax({
+        url: '{% url "like_post" %}',
+        data: payload,
+        type: 'POST',
+        cache: false,
+        success: function (data) {
+          $(".total-likes", li).text(data.likes);
+          if($(".like .heart", li).hasClass("fa fa-heart")) {
+            $(".like .heart", li).removeClass("fa fa-heart");
+            $(".like .heart", li).addClass("far fa-heart");
+            $(".like .heart", li).removeAttr("style");
+          } else {
+            $(".like .heart", li).removeClass("far fa-heart");
+            $(".like .heart", li).addClass("fa fa-heart");
+            $(".like .heart", li)[0].setAttribute("style", "color:#FF0000;");
+          }
+        }
+      });
+      return false;
+      });
+
+
+
+      $(document).on("click", ".like", function() {
+        console.log(document.body)
+
+        var art = $(this).closest("article");
+        var post = $(art).attr("post-id");
+        console.log(post)
+        payload = {
+          'post': post,
+          'csrfmiddlewaretoken': '{{csrf_token}}',
+        }
+        $.ajax({
+          url: '{% url "like_post" %}',
+          data: payload,
+          type: 'POST',
+          cache: false,
+          success: function (data) {
+            $(".total-likes", art).text(data.likes);
+            if($(".like .heart").hasClass("fa fa-heart")) {
+              $(".like .heart").removeClass("fa fa-heart");
+              $(".like .heart").addClass("far fa-heart");
+              $(".like .heart").removeAttr("style");
+            } else {
+              $(".like .heart").removeClass("far fa-heart");
+              $(".like .heart").addClass("fa fa-heart");
+              $(".like .heart")[0].setAttribute("style", "color:#FF0000;");
+            }
+          }
+        });
+        return false;
+        });
+
+
+
+        $(document).on('submit', '.comment-form', function(event){
+          event.preventDefault();
+          console.log($(this).serialize());
+          $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(response) {
+              $('.main-comment-section').html(response['form']);
+              $('textarea').val('');
+              $('.reply-btn').click(function() {
+                $(this).parent().parent().next('.replied-comments').fadeToggle();
+                $('textarea').val('');
+              });
+            },
+            error: function(rs, e) {
+              console.log(rs.responseText);
+            },
+          });
+        });
+
+
+        $(document).on('submit', '.reply-form', function(event){
+          event.preventDefault();
+          console.log($(this).serialize());
+          var comment = $(this).find('input[name="comment_id"]').val()
+          console.log("Hello!");
+          console.log(comment)
+          $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(response) {
+              $('.main-comment-section').html(response['form']);
+              $('textarea').val('');
+              $('.reply-btn').click(function() {
+                $(this).parent().parent().next('.replied-comments').fadeToggle();
+                $('textarea').val('');
+              });
+            },
+            error: function(rs, e) {
+              console.log(rs.responseText);
+            },
+          });
+        });
+
+
+
+  });
+
+
+
+
+  </script>
+  {% endif %}
 </body>
 </html>

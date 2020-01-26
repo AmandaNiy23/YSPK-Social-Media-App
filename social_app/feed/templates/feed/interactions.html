@@ -1,20 +1,26 @@
-<form action="{% url 'like_post' %}" method="post">
-  {% csrf_token %}
-  {% if is_liked%}
-    <button type="submit" id="likebutton" name="post_id" value={{post.id}} class = "btn btn-primary-outline btn-sm mt-1 mb-1" style="background-color:transparent"><i class="fa fa-heart" style="color:#FF0000;"></i></button>
-  {% else %}
-    <button type="submit" id="likebutton" name="post_id" value={{post.id}} class = "btn btn-primary-outline btn-sm mt-1 mb-1" style="background-color:transparent"><i class="far fa-heart"></i></button>
 
-  {% endif %}
-  {{total_likes}}
+  <a href="" class="comment"><i class="far fa-comment"></i>
+  <span class="total-likess">{{ post.comments.count }}
+
+  <a href="" class="like">
+    {%csrf_token%}
+    {% if request.user in post.get_likers %}
+      <i class="heart fa fa-heart" style="color:#FF0000;"></i>
+    {% else %}
+      <i class="heart far fa-heart"></i>
+    {% endif %}
+  </a>
+  <span class="total-likes">{{post.total_likes}} </span>
+
   {% if post.author == user %}
     <a class="btn btn-primary-outline btn-sm mt-1 mb-1" href="{% url 'post-update' post.id%}">
+        <span>
         <i class="far fa-edit"></i> Edit Post
+        </span>
     </a>
     <a class="btn btn-primary-outline btn-sm mt-1 mb-1" href="{% url 'post-delete' post.id%}">
-        <i class="far fa-trash-alt"></i>
+        <span><i class="far fa-trash-alt"></i>
         Delete Post
+        </span>
     </a>
-
-{% endif %}
-</form>
+  {% endif %}

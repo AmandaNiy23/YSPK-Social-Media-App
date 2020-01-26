@@ -19,7 +19,6 @@ class Post(models.Model):
 
 
     def toggle_like(self, user):
-
         if user in self.likes.all():
             self.likes.remove(user)
         else:
@@ -30,3 +29,19 @@ class Post(models.Model):
 
     def get_likers(self):
         return self.likes.all()
+
+    # def total_comments(self):
+    #     return self.comments.count()
+    #
+    # def get_comments(self):
+    #     return self.comments.all()
+
+class Comment(models.Model):
+    post=models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    user =models.ForeignKey(User, on_delete=models.CASCADE)
+    reply = models.ForeignKey('Comment', on_delete=models.CASCADE, null=True, related_name="replies")
+    content = models.TextField()
+    date_posted = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return '{}-{}'.format(self.post.title, str(self.user.username))
