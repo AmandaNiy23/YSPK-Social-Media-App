@@ -4,6 +4,16 @@
     <ul style="list-style-type:none" class="stream">
       {% if user.is_authenticated %}
       <a class="btn btn-outline-secondary content-section newpost" href="{% url 'post-create' %}">Create New Post</a>
+      {% else %}
+
+      <article class="media content-section">
+        <h2>
+          Welcome to YSPK!
+          Join the conversation,
+          let the people know what they should prabably know!
+        </h2>
+      </article>
+
       {%endif%}
       {% for post in posts %}
       <li class="postobj" post-id="{{post.id}}">
