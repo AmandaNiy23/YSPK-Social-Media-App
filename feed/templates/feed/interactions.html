@@ -2,15 +2,22 @@
   <a href="{% url 'post_detail' post.id %}" class="comment"><i class="far fa-comment"></i>
   <span class="total-likess">{{ post.comments.count }}
 
-  <a href="" class="like">
-    {%csrf_token%}
-    {% if request.user in post.get_likers %}
-      <i class="heart fa fa-heart" style="color:#FF0000;"></i>
-    {% else %}
+  {% if request.user.is_authenticated %}
+    <a href="" class="like">
+      {%csrf_token%}
+      {% if request.user in post.get_likers %}
+        <i class="heart fa fa-heart" style="color:#FF0000;"></i>
+      {% else %}
+        <i class="heart far fa-heart"></i>
+      {% endif %}
+    </a>
+  {% else %}
+    <a href="{% url 'login' %}" class="like">
       <i class="heart far fa-heart"></i>
-    {% endif %}
-  </a>
+    </a>
+  {% endif %}
   <span class="total-likes">{{post.total_likes}} </span>
+
 
   {% if post.author == user %}
     <a class="btn btn-primary-outline btn-sm mt-1 mb-1" href="{% url 'post-update' post.id%}">
